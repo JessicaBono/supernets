@@ -3,6 +3,8 @@
 
 """
 
+#imported netaddr but library ip address has similar functions
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -138,10 +140,13 @@ def main(argv=None):
     process_prefixes()
     verbose_print("="*79, "\n")
     for network in sorted(networks, key=lambda ip: ip.network_address.packed):
-        print(network)
+        if network.prefixlen < 16:
+            small_supers = list(network.subnets(new_prefix=16))
+            for new_super in small_supers:
+                print(new_super)
+        else:
+            print(network)
     
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
